@@ -98,8 +98,6 @@ def atualizar():
 
 
 
-
-
 def deletar():
     conn  = conectar()
     db =  conn.farm
@@ -125,6 +123,7 @@ def deletar():
         print(f'Objeto ID invalido: {f}')
     desconectar(conn)       
 
+
 def listar():
     conn = conectar()
     db = conn.farm
@@ -134,15 +133,14 @@ def listar():
             produtos = db.produtos.find()
             print('Listando os produtos')
             print('------------------')
+            
+            lst_products = []
             for item in produtos:
-                print(f"ID     : {item['_id']}")
-                print(f"Nome   : {item['nome']}")
-                print(f"Preço  : {item['preco']}")
-                print(f"Estoque: {item['estoque']}")
-                print('------------------')
+                product = ProductSchema(nome=item['nome'], preco=item['preco'],estoque=item['estoque'])
+                lst_products.append(product)
+            return lst_products
         else:
             print('Não existem produtos cadastrados') 
-
     except errors.PyMongoError as e:
         print(f'Não foi possível conectar a base de dados')
     desconectar(conn)
