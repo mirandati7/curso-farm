@@ -2,7 +2,7 @@ from bson import errors as beeros
 from bson.objectid import ObjectId
 from pymongo import MongoClient, errors
 
-from schemas.product_schema import ProductSchema
+from schemas.product_schema import ProductSchema, ProductSchemaBase
 
 
 # metodo para conectar no mongodb
@@ -98,6 +98,8 @@ def atualizar():
 
 
 
+
+
 def deletar():
     conn  = conectar()
     db =  conn.farm
@@ -123,7 +125,6 @@ def deletar():
         print(f'Objeto ID invalido: {f}')
     desconectar(conn)       
 
-
 def listar():
     conn = conectar()
     db = conn.farm
@@ -133,14 +134,15 @@ def listar():
             produtos = db.produtos.find()
             print('Listando os produtos')
             print('------------------')
+            lst_produtos = []
             
-            lst_products = []
             for item in produtos:
-                product = ProductSchema(nome=item['nome'], preco=item['preco'],estoque=item['estoque'])
-                lst_products.append(product)
-            return lst_products
+                product = ProductSchemaBase(id=str(item["_id"]), nome=item["nome"],preco=item["preco"],estoque=item["estoque"])
+                lst_produtos.append(product)
+            return lst_produtos
         else:
             print('Não existem produtos cadastrados') 
+
     except errors.PyMongoError as e:
         print(f'Não foi possível conectar a base de dados')
     desconectar(conn)

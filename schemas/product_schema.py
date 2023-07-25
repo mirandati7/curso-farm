@@ -10,3 +10,12 @@ class ProductSchema(SCBaseModel):
     
     class Config:
         orm_mode = True
+
+class ProductSchemaBase(SCBaseModel):
+    id: str
+    nome:str
+    preco: float
+    estoque: float
+    
+    class Config:
+        orm_mode = True
