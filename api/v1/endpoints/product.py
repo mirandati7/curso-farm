@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 
 from schemas.common_schema import CommonSchema
 from schemas.product_schema import ProductSchema, ProductSchemaBase
-from services.produto import consultar_por_id, inserir, listar
+from services.produto import atualizar, consultar_por_id, inserir, listar
 
 router = APIRouter()
 
@@ -21,3 +21,7 @@ async def get_product(id: str):
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[ProductSchemaBase])
 async def get_product_list():
     return listar()
+
+@router.put("/{id}", status_code=status.HTTP_200_OK, response_model=ProductSchemaBase)
+async def put_product(_id: str,product: ProductSchema):
+    return atualizar(id=_id, product=product)

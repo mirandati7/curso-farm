@@ -60,15 +60,11 @@ def consultar_por_id(id):
    
     
 
-def atualizar():
+def atualizar(id: str, product: ProductSchema):
     conn  = conectar()
     db =  conn.farm
 
-    _id = input("Informe o ID do produto:")
-
-    nome = input("Informe o nome do produto :")
-    preco =  float(input("Informe o preco do produto :"))
-    estoque = float(input("Informe o estoque do produto: "))
+    _id = str(id)
 
     try:
         if db.produtos.count_documents({}) > 0:
@@ -77,9 +73,9 @@ def atualizar():
                 {
                     "$set":  
                             {
-                                "nome": nome,
-                                "preco": preco,
-                                "estoque": estoque
+                                "nome": product.nome,
+                                "preco": product.preco,
+                                "estoque": product.estoque
                             }
                 }
 
@@ -87,9 +83,7 @@ def atualizar():
 
             if res.modified_count > 0:
                 print(f"Produto foi alterado com sucesso")
-            else:
-                print("Não existe produto para serem alterados")
-
+                return ProductSchemaBase(id=str(ObjectId(_id)), nome=product.nome,preco=product.preco,estoque=product.estoque)
     except errors.PyMongoError as e:
         print(f'Erro ao acessar a base de dados: {e}')
     except beeros.InvalidId as f:
