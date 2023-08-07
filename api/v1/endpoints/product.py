@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, status
 
 from schemas.common_schema import CommonSchema
 from schemas.product_schema import ProductSchema, ProductSchemaBase
-from services.produto import atualizar, consultar_por_id, inserir, listar
+from services.product_service import (atualizar, consultar_por_id, inserir,
+                                      listar)
 
 router = APIRouter()
 

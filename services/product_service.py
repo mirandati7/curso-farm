@@ -1,19 +1,9 @@
 from bson import errors as beeros
 from bson.objectid import ObjectId
-from pymongo import MongoClient, errors
+from pymongo import errors
 
+from core.conexao import conectar, desconectar
 from schemas.product_schema import ProductSchema, ProductSchemaBase
-
-
-# metodo para conectar no mongodb
-def conectar():
-    conn = MongoClient(host="localhost", port=27017)
-    return conn
-
-# metodo para descconectar do mongodb
-def desconectar(conn):
-    if conn:
-        conn.close()
 
 
 def inserir(product: ProductSchema):
@@ -50,7 +40,7 @@ def consultar_por_id(id):
             )            
             nome= res['nome']
             preco= res['preco']
-            estoque= res["estoque"]            
+            estoque= res["estoque"]
             desconectar(conn)
             return ProductSchema(nome=nome, preco=preco,estoque=estoque )
     except errors.PyMongoError as e:
@@ -141,25 +131,4 @@ def listar():
         print(f'Não foi possível conectar a base de dados')
     desconectar(conn)
 
-if __name__ == "__main__":
-    print("==========================================")
-    print("Selecione uma opção")
-    print("1 - Listar Produtos")
-    print("2 - Inserir Produto")
-    print("3 - Atualizar Produto")
-    print("4 - Deletar Produto")
 
-    opcao = int(input())
-    if opcao in [1,2,3,4]:
-        if opcao == 1:
-            listar()
-        elif opcao == 2:
-            consultar_por_id("")
-        elif opcao == 3:
-            atualizar()
-        elif opcao == 4:
-            deletar()  
-        else:
-            print('Opção inválida')
-    else:
-        print('Opção inválida')
