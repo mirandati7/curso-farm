@@ -3,6 +3,7 @@ from bson.objectid import ObjectId
 from pymongo import errors
 
 from core.conexao import conectar, desconectar
+from core.security import generate_hash_password, verify_password
 from schemas.user_schema import UserSchema, UserSchemaBase
 
 
@@ -11,9 +12,8 @@ def inserir(user: UserSchema):
     db = conn.farm
 
     login    = user.login
-    password =  user.password
+    password =  generate_hash_password(user.password)
     
-
     try:
         db.users.insert_one(
             {
@@ -40,9 +40,14 @@ def autenticar(user: UserSchema):
                 {"login": login }
             )
             login= res['login']
-            desconectar(conn)
-            return UserSchemaBase(login=login)
+            password = res['password']
+
+            if not verify_password(user.password, password):
+                desconectar(conn)
+                return UserSchemaBase(login="Usuario não logado")
+            else:
+                desconectar(conn)
+                return UserSchemaBase(login=login)
 
     except errors.PyMongoError as e:
         print(f'Erro ao acessar a base de dados: {e}' )
-
