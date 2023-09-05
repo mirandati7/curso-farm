@@ -39,15 +39,20 @@ def autenticar(user: UserSchema):
             res = db.users.find_one(
                 {"login": login }
             )
-            login= res['login']
-            password = res['password']
+            if res != None:
+                login= res['login']
+                password = res['password']
+                id = res['_id']
 
-            if not verify_password(user.password, password):
-                desconectar(conn)
-                return UserSchemaBase(login="Usuario não logado")
-            else:
-                desconectar(conn)
-                return UserSchemaBase(login=login)
+                print(f"id do mongo:  {id}" )
+
+                if not verify_password(user.password, password):
+                    print(f"senhas diferentes {password}" )
+                    desconectar(conn)
+                    return None
+                else:
+                    desconectar(conn)
+                    return UserSchemaBase(id=str(id),login=login)
 
     except errors.PyMongoError as e:
         print(f'Erro ao acessar a base de dados: {e}' )
